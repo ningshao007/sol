@@ -43,10 +43,10 @@ contract SimpleContract {
     error Unauthorized(address caller);
     error InsufficientBalance(uint256 available, uint256 required);
 
-    modifer onlyOwner(){
+    modifier onlyOwner(){
       if(msg.sender != owner){
         revert Unauthorized(msg.sender);
-      }
+     }
       _;
     }
 
@@ -162,7 +162,7 @@ contract SimpleContract {
         selector = this.dataOperations.selector;
     }
 
-    function fadvancedOperations(uint256 x) public pure returns (UFixed18,uint256){
+    function advancedOperations(uint256 x) public pure returns (UFixed18,uint256){
       UFFixed18 value = UFixed18.wrap(x);
       UFixed18 doubleValue = value + value;
 
