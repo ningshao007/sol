@@ -22,6 +22,7 @@ contract OtherContract {
 }
 
 contract CallContract {
+    // 这里的_Address是外部合约的地址
     function callSetX(address _Address, uint256 x) external {
         OtherContract(_Address).setX(x);
     }
