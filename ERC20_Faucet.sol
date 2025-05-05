@@ -16,6 +16,10 @@ contract Faucet {
 
     function requestToken() external {
         require(!requestedAddress[msg.sender], "Cant request multiple times");
+        /**
+         * NOTE: 不是传参,而是类型转换
+         * 把tokenContract这个地址当作一个实现了IERC20接口的合约来使用,它是一个部署了符合IERC20规范的合约,可以调用token.transfer,token.balanceOf等接口函数;
+         */
         IERC20 token = IERC20(tokenContract);
         require(
             token.balanceOf(address(this)) >= amountAllowed,

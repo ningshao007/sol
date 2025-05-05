@@ -6,10 +6,10 @@ import "./IERC20.sol";
 contract Airdrop {
     mapping(address => uint) failTransferList;
 
-    // @notice 向多个地址转账ERC20代币，使用前需要先授权
-    // @param _token 转账的ERC20代币地址
-    // @param _addresses 空投地址数组
-    // @param _amounts 代币数量数组（每个地址的空投数量）
+    //  向多个地址转账ERC20代币，使用前需要先授权
+    //  _token 转账的ERC20代币地址
+    //  _addresses 空投地址数组
+    //  _amounts 代币数量数组（每个地址的空投数量）
     function multiTransferToken(
         address _token,
         address[] calldata _addresses,
@@ -20,8 +20,9 @@ contract Airdrop {
             _addresses.length == _amounts.length,
             "Lengths of Addresses and Amounts NOT EQUAL"
         );
-        IERC20 token = IERC20(_token); // 声明IERC合约变量
-        uint _amountSum = getSum(_amounts); // 计算空投代币总量
+        IERC20 token = IERC20(_token);
+        // 计算空投代币总量
+        uint _amountSum = getSum(_amounts);
         // 检查：授权代币数量 > 空投代币总量
         require(
             token.allowance(msg.sender, address(this)) > _amountSum,
