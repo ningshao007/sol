@@ -1,11 +1,12 @@
-// SPDX-LICENSE-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
+
 contract ValueTypes {
     bool public _bool = true;
     bool public _bool2 = !_bool;
 
-    int public _int = -1;
-    uint public _uint = 1;
+    int256 public _int = -1;
+    uint256 public _uint = 1;
 
     address public _address = 0x7A58c0Be72BE218B41C608b7Fe7C5bB630736C71;
     // 比普通地址多了transfer,send两个成员方法,用于接收转账
@@ -22,9 +23,10 @@ contract ValueTypes {
         Hold,
         Sell
     }
+
     ActionSet action = ActionSet.Buy;
 
-    function enumToUint() external view returns (uint) {
-        return uint(action);
+    function enumToUint() external view returns (uint256) {
+        return uint256(action);
     }
 }

@@ -1,4 +1,4 @@
-// SPDX-LICENSE-IDENTIFIER: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
 contract FunctionTypes {
@@ -10,9 +10,7 @@ contract FunctionTypes {
         number += 1;
     }
 
-    function addPure(
-        uint256 _number
-    ) external pure returns (uint256 new_number) {
+    function addPure(uint256 _number) external pure returns (uint256 new_number) {
         // 这里可不能写number,因为number是状态变量,状态变量不能在纯函数中使用
         new_number = _number + 1;
     }

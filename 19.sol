@@ -3,9 +3,10 @@ pragma solidity ^0.8.21;
 
 contract OtherContract {
     uint256 private _x = 0;
-    event Log(uint amount, uint gas);
 
-    function getBalance() public view returns (uint) {
+    event Log(uint256 amount, uint256 gas);
+
+    function getBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
@@ -16,30 +17,29 @@ contract OtherContract {
         }
     }
 
-    function getX() external view returns (uint x) {
+    function getX() external view returns (uint256 x) {
         x = _x;
     }
 }
 
+// 类型转换
 contract CallContract {
     // 这里的_Address是外部合约的地址
+    // 将地址转换为合约类型,然后调用合约的setX函数.而不是new OtherContract(),两者有区别的
     function callSetX(address _Address, uint256 x) external {
         OtherContract(_Address).setX(x);
     }
 
-    function callGetX(OtherContract _Address) external view returns (uint x) {
+    function callGetX(OtherContract _Address) external view returns (uint256 x) {
         x = _Address.getX();
     }
 
-    function callGetX2(address _Address) external view returns (uint x) {
+    function callGetX2(address _Address) external view returns (uint256 x) {
         OtherContract oc = OtherContract(_Address);
         x = oc.getX();
     }
 
-    function setXTransferETH(
-        address otherContract,
-        uint256 x
-    ) external payable {
+    function setXTransferETH(address otherContract, uint256 x) external payable {
         OtherContract(otherContract).setX{value: msg.value}(x);
     }
 }

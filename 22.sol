@@ -21,10 +21,7 @@ contract PairFactory {
     mapping(address => mapping(address => address)) public getPair;
     address[] public allPairs;
 
-    function createPair(
-        address tokenA,
-        address tokenB
-    ) external returns (address pairAddr) {
+    function createPair(address tokenA, address tokenB) external returns (address pairAddr) {
         Pair pair = new Pair();
         pair.initialize(tokenA, tokenB);
         pairAddr = address(pair);
@@ -38,14 +35,9 @@ contract PairFactory2 {
     mapping(address => mapping(address => address)) public getPair;
     address[] public allPairs;
 
-    function createPair2(
-        address tokenA,
-        address tokenB
-    ) external returns (address pairAddr) {
+    function createPair2(address tokenA, address tokenB) external returns (address pairAddr) {
         require(tokenA != tokenB, "Identical_addresses");
-        (address token0, address token1) = tokenA < tokenB
-            ? (tokenA, tokenB)
-            : (tokenB, tokenA);
+        (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         bytes32 salt = keccak256(abi.encodePacked(token0, token1));
         Pair pair = new Pair{salt: salt}();
         pair.initialize(tokenA, tokenB);
@@ -56,27 +48,13 @@ contract PairFactory2 {
     }
 }
 
-function calculateAddr(
-    address tokenA,
-    address tokenB
-) public view returns (address predictedAddress) {
+function calculateAddr(address tokenA, address tokenB) public view returns (address predictedAddress) {
     require(tokenA != tokenB, "Identical_addresses");
-    (address token0, address token1) = tokenA < tokenB
-        ? (tokenA, tokenB)
-        : (tokenB, tokenA);
+    (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
     bytes32 salt = keccak256(abi.encodePacked(token0, token1));
     predictedAddress = address(
         uint160(
-            uint(
-                keccak256(
-                    abi.encodePacked(
-                        bytes1(0xff),
-                        address(this),
-                        salt,
-                        keccak256(type(Pair).creationCode)
-                    )
-                )
-            )
+            uint256(keccak256(abi.encodePacked(bytes1(0xff), address(this), salt, keccak256(type(Pair).creationCode))))
         )
     );
 }
