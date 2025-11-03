@@ -2,6 +2,7 @@
 pragma solidity ^0.8.21;
 
 // 消耗gas require > assert > error
+// required最常用的，其次是revert,assert很少用
 
 // 可以在contract外定义使用
 error TransferNotOwner();
