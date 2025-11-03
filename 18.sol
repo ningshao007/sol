@@ -5,9 +5,9 @@ error SendFailed();
 error CallFailed();
 
 // 3种方法发送ETH
-// 1. transfer() 2300 gas ,revert
-// 2. send() 2300 gas , return bool
-// 3. call() all gas , return (bool, data).没有gas限制,需要手动处理revert.可以支持对方合约fallback()和receive()实现复杂逻辑
+// 1. transfer() 2300 gas ,revert, 不推荐
+// 2. send() 2300 gas , return bool, 不推荐
+// 3. call() all gas , return (bool, data).没有gas限制,需要手动处理revert.可以支持对方合约fallback()和receive()实现复杂逻辑,推荐
 
 contract SendETH {
     // 构造函数,payable使得部署的时候可以转eth进去
@@ -30,7 +30,7 @@ contract SendETH {
 
     // 用call()发送eth
     function callETH(address payable _to, uint256 amount) external payable {
-        (bool success, ) = _to.call{value: amount}("");
+        (bool success,) = _to.call{value: amount}("");
         if (!success) {
             revert CallFailed();
         }
@@ -38,13 +38,13 @@ contract SendETH {
 }
 
 contract ReceiveETH {
-    event Log(uint amount, uint gas);
+    event Log(uint256 amount, uint256 gas);
 
     receive() external payable {
         emit Log(msg.value, gasleft()); // gasleft() 返回剩余的gas, 全局函数
     }
 
-    function getBalance() public view returns (uint) {
+    function getBalance() public view returns (uint256) {
         return address(this).balance;
     }
 }
