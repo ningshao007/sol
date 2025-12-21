@@ -108,24 +108,32 @@ contract Selector {
         // 利用abi.encodeWithSelector将函数的selector和参数打包编码
         // 调用nonParamSelector函数
         (bool success0, bytes memory data0) = address(this).call(
-            abi.encodeWithSelector(0x03817936)
+            abi.encodeWithSelector(this.nonParamSelector.selector)
         );
         // 调用elementaryParamSelector函数
         (bool success1, bytes memory data1) = address(this).call(
-            abi.encodeWithSelector(0x3ec37834, 1, 0)
+            abi.encodeWithSelector(this.elementaryParamSelector.selector, 1, false)
         );
         // 调用fixedSizeParamSelector函数
+        uint256[3] memory fixedParam = [uint256(1), 2, 3];
         (bool success2, bytes memory data2) = address(this).call(
-            abi.encodeWithSelector(0xead6b8bd, [1, 2, 3])
+            abi.encodeWithSelector(
+                this.fixedSizeParamSelector.selector,
+                fixedParam
+            )
         );
         // 调用nonFixedSizeParamSelector函数
         (bool success3, bytes memory data3) = address(this).call(
-            abi.encodeWithSelector(0xf0ca01de, param1, "abc")
+            abi.encodeWithSelector(
+                this.nonFixedSizeParamSelector.selector,
+                param1,
+                "abc"
+            )
         );
         // 调用mappingParamSelector函数
         (bool success4, bytes memory data4) = address(this).call(
             abi.encodeWithSelector(
-                0xe355b0ce,
+                this.mappingParamSelector.selector,
                 0x9D7f74d0C41E726EC95884E0e97Fa6129e3b5E99,
                 user,
                 param1,
