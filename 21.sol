@@ -16,10 +16,18 @@ contract B {
     address public sender;
 
     function callSetVars(address _addr, uint256 _num) external payable {
-        (bool success, bytes memory data) = _addr.call(abi.encodeWithSignature("setVars(uint256)", _num));
+        (bool success, bytes memory data) = _addr.call(
+            abi.encodeCall(C.setVars, (_num))
+        );
+        require(success, "Call failed");
+        data;
     }
 
-    function delegatecallSetVars(address _addr, uint256 num) external payable {
-        var() = _addr.delegatecall(abi.encodeWithSIgnature("setVars(uint256)", _num));
+    function delegatecallSetVars(address _addr, uint256 _num) external payable {
+        (bool success, bytes memory data) = _addr.delegatecall(
+            abi.encodeCall(C.setVars, (_num))
+        );
+        require(success, "Delegatecall failed");
+        data;
     }
 }
