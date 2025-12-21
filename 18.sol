@@ -16,12 +16,14 @@ contract SendETH {
     receive() external payable {}
 
     // 用transfer()发送eth,如果转账失败,会自动revert回滚交易
-    function transferETH(address payable _to, uint256 amount) external payable {
+    function transferETH(address payable _to, uint256 amount) external {
+        require(address(this).balance >= amount, "Insufficient balance");
         _to.transfer(amount);
     }
 
     // 用send()发送eth
-    function sendETH(address payable _to, uint256 amount) external payable {
+    function sendETH(address payable _to, uint256 amount) external {
+        require(address(this).balance >= amount, "Insufficient balance");
         bool success = _to.send(amount);
         if (!success) {
             revert SendFailed();
@@ -29,11 +31,13 @@ contract SendETH {
     }
 
     // 用call()发送eth
-    function callETH(address payable _to, uint256 amount) external payable {
-        (bool success,) = _to.call{value: amount}("");
+    function callETH(address payable _to, uint256 amount) external {
+        require(address(this).balance >= amount, "Insufficient balance");
+        (bool success, bytes memory data) = _to.call{value: amount}("");
         if (!success) {
             revert CallFailed();
         }
+        data;
     }
 }
 
