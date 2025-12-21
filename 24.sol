@@ -13,7 +13,7 @@ contract DeployContract {
     constructor() payable {}
 
     function demo() public payable returns (DemoResult memory) {
-        DeleteContract del = new DeleteContract{value: msg.value}();
+        DeleteContract del = new DeleteContract{value: msg.value}(msg.sender);
 
         DemoResult memory res = DemoResult({
             addr: address(del),
@@ -21,8 +21,7 @@ contract DeployContract {
             value: del.value()
         });
 
-        del.deleteContract();
-
+        // 部署者(外部调用者)需在返回地址上自行调用 deleteContract()
         return res;
     }
 }
