@@ -3,27 +3,30 @@ pragma solidity ^0.8.27;
 
 contract Incrementer {
     uint256 public number;
+    address public owner;
 
     event Increment(uint256 value);
     event Reset();
 
     constructor(uint256 initialValue) {
+        owner = msg.sender;
         number = initialValue;
     }
 
-    function increment(uint256 value) public {
-        require(value > 0, unicode"increment value should be positive number");
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner");
+        _;
+    }
+
+    function increment(uint256 value) public onlyOwner {
+        require(value > 0, "increment value should be positive number");
         number += value;
 
         emit Increment(value);
     }
 
-    function reset() public {
+    function reset() public onlyOwner {
         number = 0;
         emit Reset();
-    }
-
-    function getNumber() public view returns (uint256) {
-        return number;
     }
 }

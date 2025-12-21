@@ -7,11 +7,33 @@ contract Faucet {
     uint256 public amountAllowed = 100;
     address public tokenContract;
     mapping(address => bool) public requestedAddress;
+    address public owner;
 
     event SendToken(address indexed Receiver, uint256 indexed Amount);
 
     constructor(address _tokenContract) {
+        require(_tokenContract != address(0), "Zero address");
         tokenContract = _tokenContract;
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner");
+        _;
+    }
+
+    function setAmountAllowed(uint256 amount) external onlyOwner {
+        require(amount > 0, "Amount zero");
+        amountAllowed = amount;
+    }
+
+    function setTokenContract(address _tokenContract) external onlyOwner {
+        require(_tokenContract != address(0), "Zero address");
+        tokenContract = _tokenContract;
+    }
+
+    function resetRequester(address requester) external onlyOwner {
+        requestedAddress[requester] = false;
     }
 
     function requestToken() external {
@@ -26,7 +48,7 @@ contract Faucet {
             "Faucet Empty"
         );
 
-        token.transfer(msg.sender, amountAllowed);
+        require(token.transfer(msg.sender, amountAllowed), "Transfer failed");
         requestedAddress[msg.sender] = true;
 
         emit SendToken(msg.sender, amountAllowed);

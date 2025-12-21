@@ -1,5 +1,16 @@
 // SPDX-License-Identifier: MIT
 
+/**
+ * ERC20代币标准
+ * 账户余额 balanceOf
+ * 转账 transfer
+ * 授权转账 transferFrom
+ * 授权 approve
+ * 代币总供给 totalSupply
+ * 授权转账额度 allowance
+ * 代币信息（可选）：名称（name），代号（symbol），小数（decimals）
+ */
+
 pragma solidity ^0.8.21;
 
 /**
