@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
+import "@openzeppelin/contracts/utils/Address.sol";
+
 contract OtherContract {
     uint256 private _x = 0;
 
@@ -27,27 +29,39 @@ contract OtherContract {
 }
 
 contract Call {
-    event Response(bool success, bytes data);
+    using Address for address;
 
-    // 高级调用，OtherContract(_Address).sexX
-    // 低级调用 _addr.call{value:msg.value}(abi.encodeWithSignature("sexX(uint256)", x))
-    function callSetX(address payable _addr, uint256 x) public payable {
-        (bool success, bytes memory data) = _addr.call{value: msg.value}(abi.encodeWithSignature("setX(uint256)", x));
+    event Response(address addr, bool success, bytes data);
 
-        emit Response(success, data);
-        return abi.decode(data, (uint256));
+    // 高级调用，OtherContract(_Address).setX
+    // 低级调用 _addr.call{value:msg.value}(abi.encodeWithSignature("setX(uint256)", x))
+    function callSetX(address payable _addr, uint256 x) public payable returns (bool) {
+        require(_addr.isContract(), "Not contract");
+        (bool success, bytes memory data) = _addr.call{value: msg.value}(
+            abi.encodeCall(OtherContract.setX, (x))
+        );
+
+        emit Response(_addr, success, data);
+        require(success, "Call failed");
+        return true;
     }
 
     function callGetX(address _addr) external returns (uint256) {
-        (bool success, bytes memory data) = _addr.call(abi.encodeWithSignature("getX()"));
+        require(_addr.isContract(), "Not contract");
+        (bool success, bytes memory data) = _addr.call(
+            abi.encodeCall(OtherContract.getX, ())
+        );
 
-        emit Response(success, data);
+        emit Response(_addr, success, data);
+        require(success, "Call failed");
         return abi.decode(data, (uint256));
     }
 
     function callNonExist(address _addr) external {
-        (bool success, bytes memory data) = _addr.call(abi.encodeWithSignature("foo(uint256)"));
+        (bool success, bytes memory data) = _addr.call(
+            abi.encodeWithSignature("foo(uint256)")
+        );
 
-        emit Response(success, data);
+        emit Response(_addr, success, data);
     }
 }
